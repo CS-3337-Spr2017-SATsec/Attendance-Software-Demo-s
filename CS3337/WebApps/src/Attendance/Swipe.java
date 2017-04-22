@@ -51,9 +51,15 @@ public class Swipe extends HttpServlet {
 		
 		if(request.getSession().getAttribute("settingError")==null){
 			if(swipe != "" && swipe != null){
-				//Time currentTime = Time();
-				Calendar cal = Calendar.getInstance();
-		        Time currentTime = new Time(cal.getTime().getHours(),cal.getTime().getMinutes(),cal.getTime().getSeconds());
+				
+				//Get current time;
+		        SimpleDateFormat hour = new SimpleDateFormat("HH");
+		        SimpleDateFormat minute = new SimpleDateFormat("mm");
+		        Date d = new Date();
+
+		        int currentHour = Integer.parseInt(hour.format(d));
+		        int currentMinute = Integer.parseInt(minute.format(d));
+		        
 	
 				String lastName = "";
 				String firstName = "";
@@ -103,14 +109,17 @@ public class Swipe extends HttpServlet {
 				request.setAttribute("swipe", student);
 				
 				Time courseDeadline = (Time) request.getSession().getAttribute("courseDeadline");
-				
-				if(timeAmPm.equals("PM") && lateAmPm.equals("AM")){
-					request.getSession().setAttribute("status", "Late!");
-				}else{
-					if(timeHour<lateHour){
+				int lateHour = Integer.parseInt(hour.format(courseDeadline));
+				int lateMinute = Integer.parseInt(minute.format(courseDeadline));
+				//String timeAmPm = "";
+			
+				//if(timeAmPm.equals("PM") && lateAmPm.equals("AM")){
+				//request.getSession().setAttribute("status", "Late!");
+				//}else{
+					if(currentHour<lateHour){
 						request.getSession().setAttribute("status", "On Time!");
-					}else if(timeHour == lateHour){
-						if(timeMinute <= lateMinute){
+					}else if(currentHour == lateHour){
+						if(currentMinute <= lateMinute){
 							request.getSession().setAttribute("status", "On Time!");
 						}else{
 							request.getSession().setAttribute("status", "Late!");
@@ -118,7 +127,7 @@ public class Swipe extends HttpServlet {
 					}else{
 						request.getSession().setAttribute("status", "Late!");
 					}
-				}
+				//}
 				
 			}else{
 				request.setAttribute("swipe", null);
